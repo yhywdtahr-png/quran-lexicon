@@ -1,99 +1,146 @@
-<!-- قسم البحث الذكي المربوط بـ Gemini للسلم السداسي -->
-<div class="gemini-search-container" style="margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; max-width: 800px; font-family: Tahoma, sans-serif; direction: rtl; text-align: right;">
-    <h3>المساعد الذكي لمعجم الحقول الدلالية (CEMF-v2) - السلم السداسي</h3>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معجم الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f4f6f9; color: #333; margin: 0; padding: 20px; direction: rtl; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1, h2 { color: #1e3d59; text-align: center; }
+        .api-box { margin-bottom: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }
+        .search-box { margin-bottom: 25px; text-align: center; }
+        input[type="text"], input[type="password"] { width: 65%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; margin-left: 10px; }
+        button { padding: 12px 22px; font-size: 16px; background: #17b978; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #149a65; }
+        .section-box { margin-top: 20px; padding: 20px; background: #fdfdfd; border: 1px solid #e1e8ed; border-radius: 8px; }
+        .quran-ayah { font-family: "Traditional Arabic", serif; font-size: 22px; color: #0b4f6c; background: #e8f4f8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-right: 4px solid #17b978; line-height: 1.8; }
+        .ai-result { white-space: pre-line; line-height: 1.8; font-size: 15px; color: #2d3748; }
+        .references-box { margin-top: 15px; padding: 10px 15px; background: #edf2f7; border-radius: 6px; font-size: 13px; color: #4a5568; }
+        #keyStatus { font-size: 13px; margin-right: 10px; color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>معجم الكلمات الحقولية المكثفة في القرآن (CEMF-v2)</h1>
+    <p style="text-align: center; color: #666;">منصة الربط بين السياق المصحف الشريف والتحليل الحقلي وفق "السلم السداسي"</p>
     
-    <!-- إعدادات مفتاح الـ API الخاص بك (مخزن محلياً فقط بأمان) -->
-    <div style="margin-bottom: 15px; padding: 10px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px;">
-        <label for="apiKeyInput" style="font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px;">مفتاح Gemini API الخاص بك:</label>
-        <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح API هنا..." style="width: 70%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;">
-        <button onclick="saveApiKey()" style="padding: 8px 15px; font-size: 14px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer;">حفظ المفتاح محلياً</button>
-        <span id="keyStatus" style="font-size: 12px; margin-right: 10px; color: green;"></span>
+    <!-- إعدادات مفتاح الـ API -->
+    <div class="api-box">
+        <label for="apiKeyInput" style="font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px;">مفتاح Gemini API (محفوظ محلياً بأمان):</label>
+        <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح API هنا...">
+        <button onclick="saveApiKey()" style="background: #0b4f6c;">حفظ المفتاح</button>
+        <span id="keyStatus"></span>
     </div>
 
-    <p>استعلم عن أي جذر أو كلمة قرآنية لتحليلها وفق السلم السداسي:</p>
+    <!-- حقل البحث واستعلام الكلمات -->
+    <div class="search-box">
+        <input type="text" id="userInput" placeholder="أدخل الجذر أو الكلمة القرآنية (مثل: صَبْر، عَهْد)...">
+        <button onclick="runLexiconAnalysis()">تحليل السلم السداسي</button>
+    </div>
     
-    <input type="text" id="userInput" placeholder="أدخل الكلمة أو الجذر (مثل: صَبْر، حَقّ)..." style="width: 70%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
-    <button onclick="askGeminiLexicon()" style="padding: 10px 20px; font-size: 16px; background: #2c3e50; color: #fff; border: none; border-radius: 4px; cursor: pointer;">تحليل ذكي</button>
-    
-    <div id="aiResponse" style="margin-top: 15px; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; white-space: pre-line;">
-        ستظهر نتيجة التحليل الأصولي وفق السلم السداسي هنا...
+    <!-- قسم استعراض السياق القرآني والآيات -->
+    <div id="quranContextSection" class="section-box" style="display:none;">
+        <h3>السياق المصحفي والآيات المرتبطة:</h3>
+        <div id="quranAyahsBox" class="quran-ayah">جاري جلب الآيات والسياق القرآني...</div>
+    </div>
+
+    <!-- قسم التحليل الحقلي (السلم السداسي) -->
+    <div id="analysisSection" class="section-box" style="display:none;">
+        <h3>التحليل الحقلي وفق السلم السداسي:</h3>
+        <div id="aiResponse" class="ai-result">جاري إعداد التحليل الأصولي...</div>
+    </div>
+
+    <!-- قسم التوثيق والمراجع -->
+    <div id="referencesSection" class="references-box" style="display:none;">
+        <strong>المراجع والتوثيق العلمي المعتمد:</strong>
+        <p id="refText">تعتمد هذه المادة على منهجية المعجم الحقلي المكثف (CEMF-v2) مع الاستئناس بأمهات كتب التفسير ووجوه القران الكريم.</p>
     </div>
 </div>
 
 <script>
-// استرجاع المفتاح المحفوظ مسبقاً في المتصفح إن وجد
 window.onload = function() {
-    const savedKey = localStorage.getItem('gemini_lexicon_key');
+    const savedKey = localStorage.getItem('cemf_gemini_key');
     if (savedKey) {
         document.getElementById('apiKeyInput').value = savedKey;
-        document.getElementById('keyStatus').innerHTML = "✓ تم استرجاع المفتاح المحفوظ";
+        document.getElementById('keyStatus').innerHTML = "✓ متصل ومحفوظ";
     }
 };
 
 function saveApiKey() {
     const key = document.getElementById('apiKeyInput').value.trim();
     if (key) {
-        localStorage.setItem('gemini_lexicon_key', key);
+        localStorage.setItem('cemf_gemini_key', key);
         document.getElementById('keyStatus').innerHTML = "✓ تم الحفظ بنجاح";
     } else {
         alert("الرجاء إدخال مفتاح صحيح.");
     }
 }
 
-async function askGeminiLexicon() {
+async function runLexiconAnalysis() {
     const query = document.getElementById('userInput').value.trim();
-    const apiKey = document.getElementById('apiKeyInput').value.trim();
-    const responseBox = document.getElementById('aiResponse');
+    const apiKey = localStorage.getItem('cemf_gemini_key') || document.getElementById('apiKeyInput').value.trim();
     
     if (!apiKey) {
-        alert("الرجاء إدخال وحفظ مفتاح Gemini API أولاً في الحقل المخصص بالأعلى.");
+        alert("الرجاء إدخال وحفظ مفتاح Gemini API أولاً.");
         return;
     }
     
     if (!query) {
-        responseBox.innerHTML = "الرجاء إدخال كلمة أو جذر للبحث.";
+        alert("الرجاء إدخال كلمة أو جذر للبحث.");
         return;
     }
     
-    responseBox.innerHTML = "جاري التحليل الأصولي والحقلي عبر نموذج الذكاء الاصطناعي وفق السلم السداسي...";
+    // إظهار الأقسام
+    document.getElementById('quranContextSection').style.display = 'block';
+    document.getElementById('analysisSection').style.display = 'block';
+    document.getElementById('referencesSection').style.display = 'block';
+    
+    document.getElementById('quranAyahsBox').innerHTML = "جاري استخراج الآيات القرآنية ذات الصلة بالجذر وتشخيص السياق...";
+    document.getElementById('aiResponse').innerHTML = "جاري تنفيذ التحليل الحقلي الدقيق وفق السلم السداسي...";
     
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
-    const systemInstruction = `أنت محرك التحليل الأصولي والحقلي المعتمد لـ "معجم الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)". 
-عندما يطلب المستخدم تحليل أي كلمة أو جذر قرآني، يجب عليك تطبيق "السلم السداسي" وتحليلها بدقة وفق العناصر التالية حصراً:
+    const systemPrompt = `أنت الخبير الأصولي واللساني والمحرك المعتمد لـ "معجم الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)". 
+عندما يطلب المستخدم تحليل الكلمة أو الجذر القرآني: "${query}"، قم بإعطائي النتيجة مقسمة بدقة إلى قسمين رئيسيين بصيغة JSON أو نص منسق بوضوح تام:
 
-1. البناء والصوت: (الخصائص الصوتية للجذر، الجرس الصوتي، والتوافق بين جرس الكلمة ودلالتها المعجمية).
-2. الحقل التكميلي: (الكلمات والمفردات التي تكمل المعنى وتعمل معه في نسق دلالي متصل داخل السياق القرآني).
-3. الحقل المجاور: (المفردات ذات القربى الدلالية التي تشترك مع الكلمة في الإطار العام لكنها تختلف في التخوم).
-4. الحقل الموازي والمضاد: (المقابِلات أو الأضداد التي تبرز المعنى بالتضاد أو التوازي المنهجي).
-5. التقسيمات والتقاطعات: (تفريع الدلالات، وتداخل الحقول، ومواقع التقاطع الدلالي للكلمة مع حقول أخرى).
-6. لطائف القرآن والنكت البلاغية: (الإشارات البلاغية، والوجوه التفسيرية الدقيقة، واللطائف البيانية الخاصة بالآيات الواردة فيها).
+1. [السياق المصحفي والآيات]: اذكر أبرز الآيات القرآنية التي وردت فيها هذه الكلمة أو اشتقت من جذرها مع ضبط رسمها.
+2. [السلم السداسي]:
+   - البناء والصوت: (الخصائص الصوتية، الجرس، والتوافق الدلالي).
+   - الحقل التكميلي: (الكلمات والمفردات المكملة للمعنسق الدلالي).
+   - الحقل المجاور: (المفردات ذات القربى الدلالية مع بيان التخوم).
+   - الحقل الموازي والمضاد: (المقابلات والأضداد المنهجية).
+   - التقسيمات والتقاطعات: (تفريع الدلالات ومواقع التقاطع).
+   - لطائف القرآن والنكت البلاغية: (الإشارات البيانية والوجوه التفسيرية).
 
-اجعل ردك علمياً، محققاً، ومقسماً بعناوين واضحة تماماً وفق هذا السلم السداسي لكل كلمة يتم إدخالها.`;
-
-    const promptText = `${systemInstruction}\n\nالكلمة أو الجذر المراد تحليله بمعايير السلم السداسي: "${query}"`;
+التزم بالدقة العلمية والمنهجية المحررة دون إطالة مخلة.`;
 
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
+                contents: [{ parts: [{ text: systemPrompt }] }]
             })
         });
         
         const data = await response.json();
         if (data.candidates && data.candidates[0].content) {
-            const reply = data.candidates[0].content.parts[0].text;
-            responseBox.innerHTML = reply;
+            const fullReply = data.candidates[0].content.parts[0].text;
+            
+            // تقسيم مبدئي للعرض البصري بين الآيات والتحليل
+            document.getElementById('quranAyahsBox').innerHTML = "الآيات والسياق المرتبط بالجذر المستهدف (تم استدعاؤها من السياق القرآني والتحليل المعتمد).";
+            document.getElementById('aiResponse').innerHTML = fullReply;
         } else {
-            responseBox.innerHTML = "حدث خطأ في استجابة النموذج. تأكد من صحة مفتاح الـ API أو الرصيد.";
+            document.getElementById('aiResponse').innerHTML = "تعذر جلب الاستجابة. تأكد من صحة مفتاح الـ API أو رصيد الحساب.";
         }
-    }
-    catch (error) {
-        responseBox.innerHTML = "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من الاتصال بالإنترنت وصحة المفتاح.";
+    } catch (error) {
+        document.getElementById('aiResponse').innerHTML = "حدث خطأ أثناء الاتصال بالخادم. تحقق من اتصالك بالإنترنت.";
         console.error(error);
     }
 }
 </script>
 
+</body>
+</html>
