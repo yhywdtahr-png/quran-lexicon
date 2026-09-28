@@ -1,106 +1,264 @@
-<!-- قسم البحث الذكي المربوط بـ Gemini للسلم السداسي -->
-<div class="gemini-search-container" style="margin: 20px auto; padding: 20px; background: #f9f9f9; border-radius: 8px; max-width: 800px; font-family: Tahoma, sans-serif; direction: rtl; text-align: right;">
-    <h3>المساعد الذكي لمعجم الحقول الدلالية (CEMF-v2) - السلم السداسي</h3>
-    
-    <!-- إعدادات مفتاح الـ API (اختياري للزوار، مع مفتاح افتراضي مدمج للعمل المباشر) -->
-    <div style="margin-bottom: 15px; padding: 10px; background: #e8f4fd; border: 1px solid #b8daff; border-radius: 4px;">
-        <details>
-            <summary style="font-size: 13px; font-weight: bold; cursor: pointer; color: #004085;">إعدادات متقدمة: استخدام مفتاح API مخصص (اختياري)</summary>
-            <div style="margin-top: 10px;">
-                <label for="apiKeyInput" style="font-size: 13px; display: block; margin-bottom: 5px;">مفتاح Gemini API الخاص بك:</label>
-                <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح API هنا..." style="width: 70%; padding: 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px;">
-                <button onclick="saveApiKey()" style="padding: 6px 12px; font-size: 13px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer;">حفظ</button>
-                <span id="keyStatus" style="font-size: 12px; margin-right: 10px; color: green;"></span>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معجم الكلمات الحقولية المكثفة (CEMF-v2)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --accent-color: #d69e2e;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        header {
+            background: linear-gradient(135deg, #1a365d, #2a4365);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+        }
+        header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+            color: #f7fafc;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #cbd5e0;
+            font-weight: 300;
+        }
+        .content-body {
+            padding: 30px;
+        }
+        .api-box {
+            background: #fffaf0;
+            border: 1px solid #feebc8;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .api-box label {
+            display: block;
+            font-weight: 600;
+            color: #744210;
+            margin-bottom: 8px;
+        }
+        .api-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
+        }
+        .search-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .search-section label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            font-family: 'Amiri', serif;
+        }
+        .search-box-group {
+            display: flex;
+            gap: 10px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .search-box-group input {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        .search-box-group button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+        #resultContainer {
+            display: none;
+            margin-top: 30px;
+        }
+        .result-card {
+            background: #f8fafc;
+            border-right: 5px solid var(--primary-color);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            font-family: 'Amiri', serif;
+            font-size: 1.25rem;
+            line-height: 2.2;
+            white-space: pre-wrap;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #edf2f7;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <h1>معجم الكلمات الحقولية المكثفة</h1>
+        <p>منهجية السلم السداسي والتحليل السياقي الدقيق في القرآن الكريم (CEMF-v2)</p>
+    </header>
+
+    <div class="content-body">
+        <!-- إعدادات مفتاح الـ API -->
+        <div class="api-box">
+            <label for="apiKeyInput">مفتاح الذكاء الاصطناعي (Gemini API Key):</label>
+            <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح الـ API هنا..." oninput="saveKeyLocally(this.value)" />
+        </div>
+
+        <!-- حقل البحث والتحليل -->
+        <div class="search-section">
+            <label for="userInput">استعلم عن جذر، أو كلمة، أو آية قرآنية للتحليل السياقي:</label>
+            <div class="search-box-group">
+                <input type="text" id="userInput" placeholder="مثال: جذر (ضل) أو آية (ومن أضل ممن يدعو...)" />
+                <button onclick="executeCEMFAnalysis()">تحليل دلالي</button>
             </div>
-        </details>
+        </div>
+
+        <div id="loading">جاري معالجة التحليل السياقي وتطبيق السلم السداسي عبر المحرك الذكي...</div>
+
+        <!-- منطقة النتيجة الفاخرة -->
+        <div id="resultContainer">
+            <h3 style="color: var(--primary-color); font-family: 'Amiri', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; margin-bottom: 15px;">نتائج التحليل المكثف:</h3>
+            <div id="responseBox" class="result-card"></div>
+        </div>
     </div>
 
-    <p>استعلم عن أي جذر أو كلمة قرآنية لتحليلها وفق السلم السداسي:</p>
-    
-    <input type="text" id="userInput" placeholder="أدخل الكلمة أو الجذر (مثل: صَبْر، حَقّ)..." style="width: 70%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
-    <button onclick="askGeminiLexicon()" style="padding: 10px 20px; font-size: 16px; background: #2c3e50; color: #fff; border: none; border-radius: 4px; cursor: pointer;">تحليل ذكي</button>
-    
-    <div id="aiResponse" style="margin-top: 15px; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; white-space: pre-line;">
-        ستظهر نتيجة التحليل الأصولي وفق السلم السداسي هنا...
-    </div>
+    <footer>
+        جميع الحقوق محفوظة © مشروع معجم الكلمات الحقولية المكثفة (CEMF-v2)
+    </footer>
 </div>
 
 <script>
-// المفتاح الافتراضي المدمج لضمان عمل المنصة للزوار مباشرة دون طلب مفتاح
-const DEFAULT_GEMINI_KEY = ""; // ضع مفتاحك الأساسي هنا إذا أردت تضمينه، أو اتركه فارغاً ليعتمد على التخزين المحلي
+    const STORAGE_KEY = 'cemf_gemini_api_key';
 
-window.onload = function() {
-    const savedKey = localStorage.getItem('gemini_lexicon_key');
-    if (savedKey) {
-        document.getElementById('apiKeyInput').value = savedKey;
-        document.getElementById('keyStatus').innerHTML = "✓ تم استرجاع المفتاح المحفوظ";
-    }
-};
-
-function saveApiKey() {
-    const key = document.getElementById('apiKeyInput').value.trim();
-    if (key) {
-        localStorage.setItem('gemini_lexicon_key', key);
-        document.getElementById('keyStatus').innerHTML = "✓ تم الحفظ بنجاح";
-    } else {
-        alert("الرجاء إدخال مفتاح صحيح.");
-    }
-}
-
-async function askGeminiLexicon() {
-    const query = document.getElementById('userInput').value.trim();
-    const customKey = document.getElementById('apiKeyInput').value.trim();
-    const apiKey = customKey || DEFAULT_GEMINI_KEY;
-    const responseBox = document.getElementById('aiResponse');
-    
-    if (!apiKey) {
-        alert("الرجاء إدخال مفتاح Gemini API في إعدادات المتقدمة بالأسفل أو تعيين مفتاح التشغيل.");
-        return;
-    }
-    
-    if (!query) {
-        responseBox.innerHTML = "الرجاء إدخال كلمة أو جذر للبحث.";
-        return;
-    }
-    
-    responseBox.innerHTML = "جاري التحليل الأصولي والحقلي عبر نموذج الذكاء الاصطناعي وفق السلم السداسي...";
-    
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    
-    const systemInstruction = `أنت محرك التحليل الأصولي والحقلي المعتمد لـ "معجم الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)". 
-عندما يطلب المستخدم تحليل أي كلمة أو جذر قرآني، يجب عليك تطبيق "السلم السداسي" وتحليلها بدقة وفق العناصر التالية حصراً:
-
-1. البناء والصوت: (الخصائص الصوتية للجذر، الجرس الصوتي، والتوافق بين جرس الكلمة ودلالتها المعجمية).
-2. الحقل التكميلي: (الكلمات والمفردات التي تكمل المعنى وتعمل معه في نسق دلالي متصل داخل السياق القرآني).
-3. الحقل المجاور: (المفردات ذات القربى الدلالية التي تشترك مع الكلمة في الإطار العام لكنها تختلف في التخوم).
-4. الحقل الموازي والمضاد: (المقابِلات أو الأضداد التي تبرز المعنى بالتضاد أو التوازي المنهجي).
-5. التقسيمات والتقاطعات: (تفريع الدلالات، وتداخل الحقول، ومواقع التقاطع الدلالي للكلمة مع حقول أخرى).
-6. لطائف القرآن والنكت البلاغية: (الإشارات البلاغية، والوجوه التفسيرية الدقيقة، واللطائف البيانية الخاصة بالآيات الواردة فيها).
-
-اجعل ردك علمياً، محققاً، ومقسماً بعناوين واضحة تماماً وفق هذا السلم السداسي لكل كلمة يتم إدخالها.`;
-
-    const promptText = `${systemInstruction}\n\nالكلمة أو الجذر المراد تحليله بمعايير السلم السداسي: "${query}"`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
-        
-        const data = await response.json();
-        if (data.candidates && data.candidates[0].content) {
-            const reply = data.candidates[0].content.parts[0].text;
-            responseBox.innerHTML = reply;
-        } else {
-            responseBox.innerHTML = "حدث خطأ في استجابة النموذج. تأكد من صحة مفتاح الـ API أو الرصيد.";
+    function saveKeyLocally(val) {
+        if (val.trim()) {
+            localStorage.setItem(STORAGE_KEY, val.trim());
         }
     }
-    catch (error) {
-        responseBox.innerHTML = "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من الاتصال بالإنترنت وصحة المفتاح.";
-        console.error(error);
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedKey = localStorage.getItem(STORAGE_KEY);
+        if (savedKey) {
+            document.getElementById('apiKeyInput').value = savedKey;
+        }
+    });
+
+    async function executeCEMFAnalysis() {
+        const apiKey = document.getElementById('apiKeyInput').value.trim() || localStorage.getItem(STORAGE_KEY);
+        const userInput = document.getElementById('userInput').value.trim();
+
+        if (!apiKey) {
+            alert('يرجى إدخال مفتاح الـ API في الحقل بالاعلى أولاً.');
+            return;
+        }
+
+        if (!userInput) {
+            alert('يرجى إدخال جذر أو آية للتحليل.');
+            return;
+        }
+
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('resultContainer').style.display = 'none';
+
+        const systemInstruction = `أنت خبير لغوي ومفسر قراني تدار معجم "الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)".
+قم بتحليل النص المدخل بناءً على:
+1. السياق والقرائن الدقيقة (مثل تفصيل معاني الضلال: السعي = ثمرة، الطريق = وجهة، الآلهة = حقيقة، النفس = يقين، الشهادة = ضبط).
+2. تطبيق "السلم السداسي" بكافة أبعاده (الصوت، الحقل التكميلي، المجاور، الموازي والمضاد، التقاطعات، اللطائف البلاغية).
+3. إبراز النكت البلاغية وصيغ الاستغراق المطلق (مثل قاعدة "ومن أضل").
+قدم التحليل بصيغة علمية، منسقة ومصاغة بأسلوب بلاغي رفيع يليق ببحوث إعجاز القرآن.
+
+النص المراد تحليله هو: "${userInput}"`;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: systemInstruction }] }]
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+
+            if (data.candidates && data.candidates[0].content) {
+                const replyText = data.candidates[0].content.parts[0].text;
+                document.getElementById('responseBoxinnerText = replyText; // تصحيح تلقائي'
+                // عرض النتيجة
+                document.getElementById('responseBox').innerText = replyText;
+                document.getElementById('resultContainer').style.display = 'block';
+            } else {
+                alert('لم يتم استلام رد من النموذج، تحقق من صحة المفتاح.');
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ أثناء الاتصال بالخادم أو في مفتاح الـ API: ' + error.message);
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
     }
-}
 </script>
+
+</body>
+</html>
