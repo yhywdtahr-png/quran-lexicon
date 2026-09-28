@@ -153,24 +153,21 @@
     </header>
 
     <div class="content-body">
-        <!-- إعدادات مفتاح الـ API -->
         <div class="api-box">
             <label for="apiKeyInput">مفتاح الذكاء الاصطناعي (Gemini API Key):</label>
             <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح الـ API هنا..." oninput="saveKeyLocally(this.value)" />
         </div>
 
-        <!-- حقل البحث والتحليل -->
         <div class="search-section">
             <label for="userInput">استعلم عن جذر، أو كلمة، أو آية قرآنية للتحليل السياقي:</label>
             <div class="search-box-group">
-                <input type="text" id="userInput" placeholder="مثال: جذر (ضل) أو آية (ومن أضل ممن يدعو...)" />
+                <input type="text" id="userInput" placeholder="مثال: جذر (ضل) أو آية..." />
                 <button onclick="executeCEMFAnalysis()">تحليل دلالي</button>
             </div>
         </div>
 
         <div id="loading">جاري معالجة التحليل السياقي وتطبيق السلم السداسي عبر المحرك الذكي...</div>
 
-        <!-- منطقة النتيجة الفاخرة -->
         <div id="resultContainer">
             <h3 style="color: var(--primary-color); font-family: 'Amiri', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; margin-bottom: 15px;">نتائج التحليل المكثف:</h3>
             <div id="responseBox" class="result-card"></div>
@@ -203,7 +200,7 @@
         const userInput = document.getElementById('userInput').value.trim();
 
         if (!apiKey) {
-            alert('يرجى إدخال مفتاح الـ API في الحقل بالاعلى أولاً.');
+            alert('يرجى إدخال مفتاح الـ API في الحقل بالأعلى أولاً.');
             return;
         }
 
@@ -217,10 +214,10 @@
 
         const systemInstruction = `أنت خبير لغوي ومفسر قراني تدار معجم "الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)".
 قم بتحليل النص المدخل بناءً على:
-1. السياق والقرائن الدقيقة (مثل تفصيل معاني الضلال: السعي = ثمرة، الطريق = وجهة، الآلهة = حقيقة، النفس = يقين، الشهادة = ضبط).
+1. السياق والقرائن الدقيقة.
 2. تطبيق "السلم السداسي" بكافة أبعاده (الصوت، الحقل التكميلي، المجاور، الموازي والمضاد، التقاطعات، اللطائف البلاغية).
-3. إبراز النكت البلاغية وصيغ الاستغراق المطلق (مثل قاعدة "ومن أضل").
-قدم التحليل بصيغة علمية، منسقة ومصاغة بأسلوب بلاغي رفيع يليق ببحوث إعجاز القرآن.
+3. إبراز النكت البلاغية وصيغ الاستغراق المطلق.
+قدم التحليل بصيغة علمية، منسقة ومصاغة بأسلوب بلاغي رفيع يليق بحوث إعجاز القرآن.
 
 النص المراد تحليله هو: "${userInput}"`;
 
@@ -243,8 +240,6 @@
 
             if (data.candidates && data.candidates[0].content) {
                 const replyText = data.candidates[0].content.parts[0].text;
-                document.getElementById('responseBoxinnerText = replyText; // تصحيح تلقائي'
-                // عرض النتيجة
                 document.getElementById('responseBox').innerText = replyText;
                 document.getElementById('resultContainer').style.display = 'block';
             } else {
