@@ -209,6 +209,7 @@
             return;
         }
 
+        document.getElementById('loading').style.display.style = 'block';
         document.getElementById('loading').style.display = 'block';
         document.getElementById('resultContainer').style.display = 'none';
 
@@ -221,8 +222,8 @@
 
 النص المراد تحليله هو: "${userInput}"`;
 
-        // استخدام المسار المباشر والمستقر تماماً
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // استخدام الإصدار القياسي v1 حصرياً لتجاوز خطأ vbeta
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         try {
             const response = await fetch(url, {
