@@ -1,261 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معجم الكلمات الحقولية المكثفة (CEMF-v2)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1a365d;
-            --accent-color: #d69e2e;
-            --bg-color: #f7fafc;
-            --card-bg: #ffffff;
-            --text-color: #2d3748;
-            --border-color: #e2e8f0;
-        }
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.8;
-        }
-        .wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-        header {
-            background: linear-gradient(135deg, #1a365d, #2a4365);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--accent-color);
-        }
-        header h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2.2rem;
-            margin: 0 0 10px 0;
-            color: #f7fafc;
-        }
-        header p {
-            margin: 0;
-            font-size: 1.1rem;
-            color: #cbd5e0;
-            font-weight: 300;
-        }
-        .content-body {
-            padding: 30px;
-        }
-        .api-box {
-            background: #fffaf0;
-            border: 1px solid #feebc8;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-        .api-box label {
-            display: block;
-            font-weight: 600;
-            color: #744210;
-            margin-bottom: 8px;
-        }
-        .api-box input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            font-family: 'Cairo', sans-serif;
-            box-sizing: border-box;
-        }
-        .search-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .search-section label {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--primary-color);
-            font-family: 'Amiri', serif;
-        }
-        .search-box-group {
-            display: flex;
-            gap: 10px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .search-box-group input {
-            flex: 1;
-            padding: 14px 20px;
-            font-size: 1.1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-        }
-        .search-box-group button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0 30px;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        #loading {
-            display: none;
-            text-align: center;
-            color: var(--primary-color);
-            font-weight: 600;
-            margin: 20px 0;
-            font-size: 1.1rem;
-        }
-        #resultContainer {
-            display: none;
-            margin-top: 30px;
-        }
-        .result-card {
-            background: #f8fafc;
-            border-right: 5px solid var(--primary-color);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            font-family: 'Amiri', serif;
-            font-size: 1.25rem;
-            line-height: 2.2;
-            white-space: pre-wrap;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #edf2f7;
-            color: #718096;
-            font-size: 0.9rem;
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101c2b">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="معجم الكلمات الحقولية المكثفة CEMF-v2 — بحث قرآني محلي وتحليل سياقي سداسي عبر Gemini.">
+  <title>معجم الكلمات الحقولية المكثفة | CEMF-v2</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
 </head>
 <body>
+<div class="shell">
+  <header class="topbar">
+    <div class="top-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">ق</div>
+        <div class="brand-name"><b>المعجم الحقولـي</b>منصة التحليل الدلالي القرآني</div>
+      </div>
+      <span class="version">CEMF-v2 · السلم السداسي</span>
+    </div>
+    <div class="hero">
+      <div class="eyebrow">منهجية تحليل لغوي سياقي</div>
+      <h1>معجم الكلمات الحقولية المكثفة</h1>
+      <p>استكشف البنية الصوتية والحقول الدلالية للكلمة القرآنية عبر ستة مستويات تحليلية، مع البحث محليًا في نص المصحف العثماني ومداخل معجمية مختارة.</p>
+    </div>
+  </header>
 
-<div class="wrapper">
-    <header>
-        <h1>معجم الكلمات الحقولية المكثفة</h1>
-        <p>منهجية السلم السداسي والتحليل السياقي الدقيق في القرآن الكريم (CEMF-v2)</p>
-    </header>
+  <main>
+    <div class="layout">
+      <section class="card workspace" aria-labelledby="workspace-title">
+        <h2 class="section-title" id="workspace-title"><span class="num">١</span> إعداد جلسة التحليل</h2>
+        <p class="hint">اكتب كلمة أو جذرًا أو مرجع آية. يُجرى البحث في ملفات الموقع، ثم يُرسل التحليل من هذا المتصفح مباشرة إلى Gemini 3.8 Flash.</p>
+        <div id="alert" class="alert" role="alert" aria-live="polite"></div>
 
-    <div class="content-body">
-        <div class="api-box">
-            <label for="apiKeyInput">مفتاح الذكاء الاصطناعي (Gemini API Key):</label>
-            <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح الـ API هنا..." oninput="saveKeyLocally(this.value)" />
-        </div>
+        <section class="key-area" aria-labelledby="key-title">
+          <h3 class="field-label" id="key-title">مفتاح Gemini API <small>خاص بهذا المتصفح</small></h3>
+          <div class="input-wrap">
+            <input id="apiKey" class="key-input" type="password" dir="ltr" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="256" placeholder="ألصق مفتاح Google AI Studio هنا" aria-label="مفتاح Gemini API">
+            <button id="toggleKey" class="toggle-key" type="button" aria-label="إظهار مفتاح Gemini">إظهار</button>
+          </div>
+          <div class="key-actions">
+            <button id="saveKey" class="small-btn" type="button">حفظ على هذا الجهاز</button>
+            <button id="deleteKey" class="small-btn" type="button">حذف المفتاح</button>
+            <span id="keyState" class="key-state" aria-live="polite">لم يُحفظ مفتاح بعد</span>
+          </div>
+          <div class="security-note strong-warning" role="note">
+            <strong>تنبيه أمني مهم:</strong> التخزين المحلي ليس خزنة آمنة. المفتاح يُرسل من المتصفح مباشرة إلى Google، ويمكن لمن لديه وصول إلى هذا المتصفح أو أدوات المطور أو إضافة/سكريبت خبيث قراءته. لا تستخدم مفتاحًا مشتركًا أو على جهاز عام، ولا تضع مفتاحك داخل ملفات GitHub. للاستخدام العام أو الإنتاجي، استخدم وسيطًا خادميًا يحتفظ بالمفتاح خارج المتصفح.
+          </div>
+        </section>
 
-        <div class="search-section">
-            <label for="userInput">استعلم عن جذر، أو كلمة، أو آية قرآنية للتحليل السياقي:</label>
-            <div class="search-box-group">
-                <input type="text" id="userInput" placeholder="مثال: جذر (ضل) أو آية..." />
-                <button onclick="executeCEMFAnalysis()">تحليل دلالي</button>
-            </div>
-        </div>
+        <label class="field-label" for="query">الكلمة أو الجذر أو مرجع الآية</label>
+        <textarea class="searchbox" id="query" maxlength="1000" placeholder="مثال: نور، ر ح م، أو النور ٣٥ / 24:35" aria-label="الكلمة أو الجذر أو مرجع الآية"></textarea>
+        <div class="search-examples"><span>جرّب:</span><button class="chip" type="button" data-query="نور">نور</button><button class="chip" type="button" data-query="ر ح م">ر ح م</button><button class="chip" type="button" data-query="قلب">قلب</button><button class="chip" type="button" data-query="النور ٣٥">النور ٣٥</button></div>
+        <button id="runBtn" class="run-btn" type="button"><span class="btn-inner"><span class="play-icon" aria-hidden="true">✦</span><span class="spinner" aria-hidden="true"></span><span id="runLabel">تشغيل التحليل السياقي السداسي</span></span></button>
+      </section>
 
-        <div id="loading">جاري معالجة التحليل السياقي وتطبيق السلم السداسي عبر المحرك الذكي...</div>
-
-        <div id="resultContainer">
-            <h3 style="color: var(--primary-color); font-family: 'Amiri', serif; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; margin-bottom: 15px;">نتائج التحليل المكثف:</h3>
-            <div id="responseBox" class="result-card"></div>
-        </div>
+      <aside class="card side" aria-label="خطوات المنهجية">
+        <h2>مراحل السلم السداسي</h2>
+        <ol class="steps">
+          <li><span class="step-dot">١</span><span><b>الصوت</b><br>البنية الصوتية والإيقاع ومخارج الحروف.</span></li>
+          <li><span class="step-dot">٢</span><span><b>الحقل التكميلي</b><br>السمات الدلالية والاشتقاقية ذات الصلة.</span></li>
+          <li><span class="step-dot">٣</span><span><b>المجاور</b><br>التراكيب والمفردات القريبة في السياق.</span></li>
+          <li><span class="step-dot">٤</span><span><b>الموازي والمضاد</b><br>المقابلات الدلالية وحدود التضاد.</span></li>
+          <li><span class="step-dot">٥</span><span><b>التقاطعات</b><br>التداخلات بين الحقول والسياقات.</span></li>
+          <li><span class="step-dot">٦</span><span><b>النكت البلاغية</b><br>الأثر البلاغي المحتمل مع بيان وجه الاستدلال.</span></li>
+        </ol>
+        <div class="side-divider"></div>
+        <h2>المادة العلمية المحلية</h2>
+        <p class="corpus-info">يبحث التطبيق في المصحف العثماني كاملًا محليًا، ويعرض مداخل تحريرية مختارة للراغب الأصفهاني عند المطابقة. لا تُختلق الآيات أو أرقامها؛ ويُرسل أول ١٨ شاهدًا مطابقًا فقط إلى النموذج.</p>
+        <span class="corpus-count">٦٬٢٣٦ آية · ١١٤ سورة · ٤ مداخل معجمية</span>
+        <p class="disclaimer">المخرجات قراءة لغوية آلية للاستئناس، وليست تفسيرًا معتمدًا أو بديلًا عن الرجوع إلى المصادر المتخصصة. تحقق من النصوص والمراجع دائمًا.</p>
+      </aside>
     </div>
 
-    <footer>
-        جميع الحقوق محفوظة © مشروع معجم الكلمات الحقولية المكثفة (CEMF-v2)
-    </footer>
+    <section id="results" class="card results" aria-live="polite" aria-labelledby="resultsTitle">
+      <div class="results-head"><div><h2 id="resultsTitle">نتيجة التحليل</h2><div class="result-meta" id="resultMeta"></div></div><button id="copyResult" class="copy-btn" type="button">نسخ النص</button></div>
+      <div id="corpusResults"></div>
+      <div id="resultBody" class="result-body"></div>
+    </section>
+  </main>
+  <footer class="foot">CEMF-v2 · أداة بحثية تجريبية · نص المصحف من Tanzil · لا تُضمّن مفتاح API في مستودع الشيفرة</footer>
 </div>
-
-<script>
-    const STORAGE_KEY = 'cemf_gemini_api_key';
-
-    function saveKeyLocally(val) {
-        if (val.trim()) {
-            localStorage.setItem(STORAGE_KEY, val.trim());
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedKey = localStorage.getItem(STORAGE_KEY);
-        if (savedKey) {
-            document.getElementById('apiKeyInput').value = savedKey;
-        }
-    });
-
-    async function executeCEMFAnalysis() {
-        const apiKey = document.getElementById('apiKeyInput').value.trim() || localStorage.getItem(STORAGE_KEY);
-        const userInput = document.getElementById('userInput').value.trim();
-
-        if (!apiKey) {
-            alert('يرجى إدخال مفتاح الـ API في الحقل بالأعلى أولاً.');
-            return;
-        }
-
-        if (!userInput) {
-            alert('يرجى إدخال جذر أو آية للتحليل.');
-            return;
-        }
-
-        document.getElementById('loading').style.display.style = 'block';
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('resultContainer').style.display = 'none';
-
-        const systemInstruction = `أنت خبير لغوي ومفسر قراني تدير معجم "الكلمات الحقولية المكثفة في القرآن الكريم (CEMF-v2)".
-قم بتحليل النص المدخل بناءً على:
-1. السياق والقرائن الدقيقة.
-2. تطبيق "السلم السداسي" بكافة أبعاده (الصوت، الحقل التكميلي، المجاور، الموازي والمضاد، التقاطعات، اللطائف البلاغية).
-3. إبراز النكت البلاغية وصيغ الاستغراق المطلق.
-قدم التحليل بصيغة علمية، منسقة ومصاغة بأسلوب بلاغي رفيع يليق ببحوث إعجاز القرآن.
-
-النص المراد تحليله هو: "${userInput}"`;
-
-        // استخدام الإصدار القياسي v1 حصرياً لتجاوز خطأ vbeta
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: systemInstruction }] }]
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
-
-            if (data.candidates && data.candidates[0].content) {
-                const replyText = data.candidates[0].content.parts[0].text;
-                document.getElementById('responseBox').innerText = replyText;
-                document.getElementById('resultContainer').style.display = 'block';
-            } else {
-                alert('لم يتم استلام رد من النموذج، تحقق من صحة المفتاح.');
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert('حدث خطأ أثناء الاتصال بالخادم أو في مفتاح الـ API: ' + error.message);
-        } finally {
-            document.getElementById('loading').style.display = 'none';
-        }
-    }
-</script>
-
 </body>
 </html>
