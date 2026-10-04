@@ -1,87 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#101c2b">
-  <meta name="referrer" content="no-referrer">
-  <meta name="description" content="معجم الكلمات الحقولية المكثفة CEMF-v2 — بحث قرآني محلي وتحليل سياقي سداسي عبر Gemini.">
-  <title>معجم الكلمات الحقولية المكثفة | CEMF-v2</title>
-  <link rel="icon" type="image/png" href="./assets/logo.png">
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./app.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معجم الحقول الدلالية في القرآن الكريم</title>
+    <!-- مكتبة Tailwind CSS للتصميم العصري والخفيف -->
+    <script src="https://cdn.jsdelivr.5npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-<div class="shell">
-  <header class="topbar">
-    <div class="top-inner">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">ق</div>
-        <div class="brand-name"><b>المعجم الحقولـي</b>منصة التحليل الدلالي القرآني</div>
-      </div>
-      <span class="version">CEMF-v2 · السلم السداسي</span>
-    </div>
-    <div class="hero">
-      <div class="eyebrow">منهجية تحليل لغوي سياقي</div>
-      <h1>معجم الكلمات الحقولية المكثفة</h1>
-      <p>استكشف البنية الصوتية والحقول الدلالية للكلمة القرآنية عبر ستة مستويات تحليلية، مع البحث محليًا في نص المصحف العثماني ومداخل معجمية مختارة.</p>
-    </div>
-  </header>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center p-4">
 
-  <main>
-    <div class="layout">
-      <section class="card workspace" aria-labelledby="workspace-title">
-        <h2 class="section-title" id="workspace-title"><span class="num">١</span> إعداد جلسة التحليل</h2>
-        <p class="hint">اكتب كلمة أو جذرًا أو مرجع آية. يُجرى البحث في ملفات الموقع، ثم يُرسل التحليل من هذا المتصفح مباشرة إلى Gemini 3.8 Flash.</p>
-        <div id="alert" class="alert" role="alert" aria-live="polite"></div>
+    <div class="w-full max-w-2xl bg-white shadow-md rounded-2xl p-6 mt-6 border border-slate-100">
+        <h1 class="text-2xl font-bold text-center text-emerald-800 mb-2">معجم الحقول الدلالية القرآنية</h1>
+        <p class="text-sm text-slate-500 text-center mb-6">ابحث عن أي كلمة أو جذر قرآني لاستخراج التحليل اللغوي والدلالي</p>
 
-        <section class="key-area" aria-labelledby="key-title">
-          <h3 class="field-label" id="key-title">مفتاح Gemini API <small>خاص بهذا المتصفح</small></h3>
-          <div class="input-wrap">
-            <input id="apiKey" class="key-input" type="password" dir="ltr" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="256" placeholder="ألصق مفتاح Google AI Studio هنا" aria-label="مفتاح Gemini API">
-            <button id="toggleKey" class="toggle-key" type="button" aria-label="إظهار مفتاح Gemini">إظهار</button>
-          </div>
-          <div class="key-actions">
-            <button id="saveKey" class="small-btn" type="button">حفظ على هذا الجهاز</button>
-            <button id="deleteKey" class="small-btn" type="button">حذف المفتاح</button>
-            <span id="keyState" class="key-state" aria-live="polite">لم يُحفظ مفتاح بعد</span>
-          </div>
-          <div class="security-note strong-warning" role="note">
-            <strong>تنبيه أمني مهم:</strong> التخزين المحلي ليس خزنة آمنة. المفتاح يُرسل من المتصفح مباشرة إلى Google، ويمكن لمن لديه وصول إلى هذا المتصفح أو أدوات المطور أو إضافة/سكريبت خبيث قراءته. لا تستخدم مفتاحًا مشتركًا أو على جهاز عام، ولا تضع مفتاحك داخل ملفات GitHub. للاستخدام العام أو الإنتاجي، استخدم وسيطًا خادميًا يحتفظ بالمفتاح خارج المتصفح.
-          </div>
-        </section>
+        <!-- حقل البحث -->
+        <div class="flex gap-2 mb-6">
+            <input type="text" id="searchInput" placeholder="اكتب الكلمة القرآنية أو الجذر..." 
+                class="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 text-base">
+            <button onclick="performSearch()" id="searchBtn"
+                class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-xl font-medium transition-colors cursor-pointer">
+                بحث
+            </button>
+        </div>
 
-        <label class="field-label" for="query">الكلمة أو الجذر أو مرجع الآية</label>
-        <textarea class="searchbox" id="query" maxlength="1000" placeholder="مثال: نور، ر ح م، أو النور ٣٥ / 24:35" aria-label="الكلمة أو الجذر أو مرجع الآية"></textarea>
-        <div class="search-examples"><span>جرّب:</span><button class="chip" type="button" data-query="نور">نور</button><button class="chip" type="button" data-query="ر ح م">ر ح م</button><button class="chip" type="button" data-query="قلب">قلب</button><button class="chip" type="button" data-query="النور ٣٥">النور ٣٥</button></div>
-        <button id="runBtn" class="run-btn" type="button"><span class="btn-inner"><span class="play-icon" aria-hidden="true">✦</span><span class="spinner" aria-hidden="true"></span><span id="runLabel">تشغيل التحليل السياقي السداسي</span></span></button>
-      </section>
-
-      <aside class="card side" aria-label="خطوات المنهجية">
-        <h2>مراحل السلم السداسي</h2>
-        <ol class="steps">
-          <li><span class="step-dot">١</span><span><b>الصوت</b><br>البنية الصوتية والإيقاع ومخارج الحروف.</span></li>
-          <li><span class="step-dot">٢</span><span><b>الحقل التكميلي</b><br>السمات الدلالية والاشتقاقية ذات الصلة.</span></li>
-          <li><span class="step-dot">٣</span><span><b>المجاور</b><br>التراكيب والمفردات القريبة في السياق.</span></li>
-          <li><span class="step-dot">٤</span><span><b>الموازي والمضاد</b><br>المقابلات الدلالية وحدود التضاد.</span></li>
-          <li><span class="step-dot">٥</span><span><b>التقاطعات</b><br>التداخلات بين الحقول والسياقات.</span></li>
-          <li><span class="step-dot">٦</span><span><b>النكت البلاغية</b><br>الأثر البلاغي المحتمل مع بيان وجه الاستدلال.</span></li>
-        </ol>
-        <div class="side-divider"></div>
-        <h2>المادة العلمية المحلية</h2>
-        <p class="corpus-info">يبحث التطبيق في المصحف العثماني كاملًا محليًا، ويعرض مداخل تحريرية مختارة للراغب الأصفهاني عند المطابقة. لا تُختلق الآيات أو أرقامها؛ ويُرسل أول ١٨ شاهدًا مطابقًا فقط إلى النموذج.</p>
-        <span class="corpus-count">٦٬٢٣٦ آية · ١١٤ سورة · ٤ مداخل معجمية</span>
-        <p class="disclaimer">المخرجات قراءة لغوية آلية للاستئناس، وليست تفسيرًا معتمدًا أو بديلًا عن الرجوع إلى المصادر المتخصصة. تحقق من النصوص والمراجع دائمًا.</p>
-      </aside>
+        <!-- منطقة النتائج -->
+        <div id="resultArea" class="hidden bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 text-slate-700 leading-relaxed">
+            <h3 class="font-bold text-emerald-900 mb-2 border-b border-emerald-200 pb-1">نتيجة التحليل الدلالي:</h3>
+            <div id="resultContent" class="whitespace-pre-wrap text-sm sm:text-base"></div>
+        </div>
     </div>
 
-    <section id="results" class="card results" aria-live="polite" aria-labelledby="resultsTitle">
-      <div class="results-head"><div><h2 id="resultsTitle">نتيجة التحليل</h2><div class="result-meta" id="resultMeta"></div></div><button id="copyResult" class="copy-btn" type="button">نسخ النص</button></div>
-      <div id="corpusResults"></div>
-      <div id="resultBody" class="result-body"></div>
-    </section>
-  </main>
-  <footer class="foot">CEMF-v2 · أداة بحثية تجريبية · نص المصحف من Tanzil · لا تُضمّن مفتاح API في مستودع الشيفرة</footer>
-</div>
+    <!-- استدعاء Google Gen AI SDK عبر المتصفح -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.run/@google/genai"
+        }
+      }
+    </script>
+
+    <script type="module">
+        import { GoogleGenAI } from "@google/genai";
+
+        // ملاحظة: مفتاح الأمان يتم حقنه أتوماً عبر جيت هب أكشن أو استخدامه ببيئة آمنة
+        // تأكد من ضبط مفتاح العميل أو استخدام الخادم الوسيط عند النشر الفعلي
+        window.performSearch = async function() {
+            const query = document.getElementById('searchInput').value.trim();
+            const resultArea = document.getElementById('resultArea');
+            const resultContent = document.getElementById('resultContent');
+            const searchBtn = document.getElementById('searchBtn');
+
+            if (!query) {
+                alert('الرجاء كتابة كلمة للبحث عنها.');
+                return;
+            }
+
+            resultArea.classList.remove('hidden');
+            resultContent.innerHTML = 'جاري تحليل الحقل الدلالي واستخراج المعاني...';
+            searchBtn.disabled = true;
+
+            try {
+                // تهيئة عملاء الذكاء الاصطناعي
+                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
+                
+                const prompt = `أنت عالم لغة وخبير في معجم الحقول الدلالية القرآنية. قم بتحليل الكلمة القرآنية التالية بدقة: "${query}".
+                قدم التحليل بالشكل التالي:
+                1. الجذر اللغوي والمادة.
+                2. الحقل الدلالي الأساسي الذي تنتمي إليه.
+                3. الآيات أو السياق القرآني الأبرز للكلمة.
+                4. الدلالة المركزية والمعنى المعجمي باختصار وتنسيق مرتب.`;
+
+                const response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: prompt,
+                });
+
+                resultContent.innerHTML = response.text;
+            } catch (error) {
+                console.error(error);
+                resultContent.innerHTML = 'حدث خطأ أثناء الاتصال بالمعجم الذكي. يجدر التأكد من إعدادات المفتاح وتوفر الشبكة.';
+            } finally {
+                searchBtn.disabled = false;
+            }
+        };
+    </script>
 </body>
 </html>
