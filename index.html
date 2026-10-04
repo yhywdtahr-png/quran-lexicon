@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معجم الحقول الدلالية في القرآن الكريم</title>
     <!-- مكتبة Tailwind CSS للتصميم العصري والخفيف -->
-    <script src="https://cdn.jsdelivr.5npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center p-4">
 
@@ -42,8 +43,6 @@
     <script type="module">
         import { GoogleGenAI } from "@google/genai";
 
-        // ملاحظة: مفتاح الأمان يتم حقنه أتوماً عبر جيت هب أكشن أو استخدامه ببيئة آمنة
-        // تأكد من ضبط مفتاح العميل أو استخدام الخادم الوسيط عند النشر الفعلي
         window.performSearch = async function() {
             const query = document.getElementById('searchInput').value.trim();
             const resultArea = document.getElementById('resultArea');
@@ -60,7 +59,6 @@
             searchBtn.disabled = true;
 
             try {
-                // تهيئة عملاء الذكاء الاصطناعي
                 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
                 
                 const prompt = `أنت عالم لغة وخبير في معجم الحقول الدلالية القرآنية. قم بتحليل الكلمة القرآنية التالية بدقة: "${query}".
@@ -78,7 +76,7 @@
                 resultContent.innerHTML = response.text;
             } catch (error) {
                 console.error(error);
-                resultContent.innerHTML = 'حدث خطأ أثناء الاتصال بالمعجم الذكي. يجدر التأكد من إعدادات المفتاح وتوفر الشبكة.';
+                resultContent.innerHTML = 'حدث خطأ أثناء الاتصال بالمعجم الذكي. تأكد من إعدادات المفتاح وتوفر الشبكة.';
             } finally {
                 searchBtn.disabled = false;
             }
